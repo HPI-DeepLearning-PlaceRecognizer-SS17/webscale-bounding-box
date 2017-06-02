@@ -48,10 +48,10 @@ document.addEventListener 'keyup', (event) ->
       appState.busy = true
       apiClient.previous()
         .then ({imageData, imageUrl}) ->
-        appState.currentImage = imageData
-        appState.currentImageUrl = imageUrl
-        appState.busy = false
-        updateGui()
+          appState.currentImage = imageData
+          appState.currentImageUrl = imageUrl
+          appState.busy = false
+          updateGui()
 
     when 'n'
       appState.busy = true

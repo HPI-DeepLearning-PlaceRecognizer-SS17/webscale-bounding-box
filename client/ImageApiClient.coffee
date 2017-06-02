@@ -43,6 +43,7 @@ class ImageApiClient
 
     return new Promise (resolve) ->
       unirest.patch "http://localhost:3000/images/#{id}"
+        .headers({'Accept': 'application/json', 'Content-Type': 'application/json'})
         .send imageData
         .end (response) ->
           resolve response

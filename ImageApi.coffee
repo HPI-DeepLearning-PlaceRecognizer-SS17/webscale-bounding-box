@@ -1,5 +1,6 @@
 path = require 'path'
 glob = require 'glob'
+fs = require 'fs'
 
 class ImageApi
 
@@ -46,7 +47,7 @@ class ImageApi
 
 		jsonPath = path.join @folder, imageEntry.jsonFile
 
-		fs.readFile jsonPath,'utf8', (error, data) ->
+		fs.readFile jsonPath, 'utf8', (error, data) ->
 			unless error?
 				response.json JSON.parse data
 			else
@@ -60,7 +61,7 @@ class ImageApi
 			response.status(404).end()
 			return
 
-		imagePath = path.join @folder, imageEntry.jsonFile
+		imagePath = path.resolve path.join @folder, imageEntry.pictureFile
 		response.sendFile imagePath
 		return
 
@@ -72,7 +73,7 @@ class ImageApi
 			return
 
 		jsonPath = path.join @folder, imageEntry.jsonFile
-		jsonString = JSON.stringify JSON.parse(request.body), true, 2
+		jsonString = JSON.stringify request.body, true, 2
 
 		fs.writeFile jsonPath, jsonString, 'utf8', (error) ->
 			if error?
