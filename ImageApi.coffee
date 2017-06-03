@@ -16,6 +16,7 @@ class ImageApi
 
 	_discoverImages: (folder) =>
 		images = glob.sync '*.jpg', {cwd: folder}
+		images = images.sort()
 
 		images = images.map (imageFile) ->
 			imageIdOnly = imageFile.substr(0, imageFile.length - 6)
