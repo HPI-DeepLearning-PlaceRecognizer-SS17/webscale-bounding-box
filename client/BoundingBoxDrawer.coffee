@@ -1,8 +1,9 @@
 class BoundingBoxDrawer
 
-  constructor: (@canvas, @image, @bbCallback) ->
+  constructor: (@canvas, @image) ->
     @context = @canvas.getContext '2d'
 
+    @bbCallback = null
     @firstPoint = null
     @lastPoint = null
     @currentPoint = null
@@ -10,6 +11,34 @@ class BoundingBoxDrawer
     @canvas.addEventListener 'mousemove', @_mouseMove
     @canvas.addEventListener 'mouseup', @_mouseUp
     @canvas.addEventListener 'mousedown', @_mouseDown
+
+  setBbCallback: (@bbCallback) =>
+    return
+
+  clear: =>
+    @firstPoint = null
+    @lastPoint = null
+    @_update()
+
+  show: (boundingBox) =>
+    xMin = (boundingBox.x * @image.clientWidth) + @image.offsetLeft
+    yMin = (boundingBox.y * @image.clientHeight) + @image.offsetTop
+
+    xMax = xMin + (boundingBox.width * @image.clientWidth)
+    yMax = yMin + (boundingBox.height * @image.clientHeight)
+
+    @firstPoint = {
+      x: xMin
+      y: yMin
+    }
+
+    @lastPoint = {
+      x: xMax
+      y: yMax
+    }
+
+    @_update()
+    return
 
   _mouseMove: (event) =>
     @currentPoint = {
@@ -19,11 +48,10 @@ class BoundingBoxDrawer
     @_update()
     return
 
-  _mouseDown: =>
+  _mouseDown: (event) =>
     if @firstPoint? and @lastPoint?
-      @firstPoint = null
-      @lastPoint = null
-      @_update()
+      @clear()
+    @_mouseMove event
 
   _mouseUp: (event) =>
     point = {
