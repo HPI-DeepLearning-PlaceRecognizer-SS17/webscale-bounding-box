@@ -3,6 +3,11 @@
 After downloading images with `fetch-flickr`, use this tool to quickly annotate bounding
 boxes in found images.
 
+Why yet another tool? Tool like sloth or labelme offer more functionality in terms of labeling,
+but their general-purpose-ness makes them also very time-inefficient (do you really expect
+me to wait 5s for a save file dialogue after each and every image?). This tool can't do as much,
+but it can do it fast.
+
 ## Usage / Features
 
 With the `LeftArrow` and `RightArrow`, you can switch between images in the selected folder.
