@@ -17,16 +17,40 @@ bbDrawer = new BoundingBoxDrawer(drawCanvas, labeledImage, (bbox) -> console.log
 apiClient = new ImageApiClient()
 
 updateGui = ->
+  imageReadyPromise = new Promise (resolve) ->
+    labeledImage.onload = ->
+      bbDrawer.clear()
+      if appState.currentImage.manualAnnotation?.bbox?
+        bbDrawer.show appState.currentImage.manualAnnotation.bbox
+      resolve()
+      return
+
   labeledImage.src = appState.currentImageUrl
-  # ToDo read out bb and display
+  return imageReadyPromise
+
+handleLoadedImage = ({imageData, imageUrl}) ->
+  appState.currentImage = imageData
+  appState.currentImageUrl = imageUrl
+  return updateGui().then -> appState.busy = false
+
+bbDrawer.setBbCallback (bbox) =>
+  return if appState.busy
+  appState.busy = true
+
+  image = appState.currentImage
+  image.manualAnnotation ?= {}
+  image.manualAnnotation.hasBoundingBox = true
+  image.manualAnnotation.bbox = bbox
+
+  apiClient.setCurrentImage(image)
+    .then -> apiClient.next()
+    .then handleLoadedImage
+
+  return
 
 apiClient.load()
   .then -> apiClient.getCurrentImage()
-  .then ({imageData, imageUrl}) ->
-    appState.currentImage = imageData
-    appState.currentImageUrl = imageUrl
-    appState.busy = false
-    updateGui()
+  .then handleLoadedImage
 
 document.addEventListener 'keyup', (event) ->
   return if appState.busy
@@ -38,32 +62,21 @@ document.addEventListener 'keyup', (event) ->
     when 'ArrowRight'
       appState.busy = true
       apiClient.next()
-        .then ({imageData, imageUrl}) ->
-          appState.currentImage = imageData
-          appState.currentImageUrl = imageUrl
-          appState.busy = false
-          updateGui()
+        .then handleLoadedImage
 
     when 'ArrowLeft'
       appState.busy = true
       apiClient.previous()
-        .then ({imageData, imageUrl}) ->
-          appState.currentImage = imageData
-          appState.currentImageUrl = imageUrl
-          appState.busy = false
-          updateGui()
+        .then handleLoadedImage
 
     when 'n'
       appState.busy = true
       image = appState.currentImage
       image.manualAnnotation ?= {}
+      delete image.manualAnnotation.bbox
       image.manualAnnotation.hasBoundingBox = false
 
       apiClient.setCurrentImage(image)
       .then -> apiClient.next()
-      .then ({imageData, imageUrl}) ->
-          appState.currentImage = imageData
-          appState.currentImageUrl = imageUrl
-          appState.busy = false
-          updateGui()
+      .then handleLoadedImage
   return
