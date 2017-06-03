@@ -3,8 +3,9 @@ module.exports = (grunt) ->
   grunt.initConfig({
     browserify: {
       client: {
-        src: ['client/index.coffee']
-        dest: 'public/module.js'
+        files: {
+          'public/module.js': ['client/index.coffee']
+        }
         options: {
           transform: ['coffeeify']
         }
@@ -47,4 +48,8 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-browserify'
   grunt.loadNpmTasks 'grunt-contrib-watch'
 
-  grunt.registerTask('default', ['browserify', 'pug', 'sass', 'watch']);
+  grunt.registerTask 'compileClient', ['browserify', 'pug', 'sass']
+  grunt.registerTask 'default', ['compileClient']
+
+  # Watch is currently broken, so we don't use it for now
+  #grunt.registerTask('default', ['compile', 'watch']);
