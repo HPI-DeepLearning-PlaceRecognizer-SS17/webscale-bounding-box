@@ -1,0 +1,68 @@
+{
+  "id": "5449192",
+  "owner": "61066137@N00",
+  "secret": "b958831537",
+  "server": "5",
+  "farm": 1,
+  "title": "Berliner Dom",
+  "ispublic": 1,
+  "isfriend": 0,
+  "isfamily": 0,
+  "license": "0",
+  "description": {
+    "_content": ""
+  },
+  "dateupload": "1109402301",
+  "lastupdate": "1148898377",
+  "datetaken": "2003-07-09 01:17:42",
+  "datetakengranularity": "0",
+  "datetakenunknown": 0,
+  "ownername": "nickfraser",
+  "iconserver": "3",
+  "iconfarm": 1,
+  "views": "383",
+  "tags": "2003 friends berlin germany cathedral berlinerdom dominicbrown",
+  "machine_tags": "",
+  "latitude": 0,
+  "longitude": 0,
+  "accuracy": 0,
+  "context": 0,
+  "media": "photo",
+  "media_status": "ready",
+  "url_sq": "https://farm1.staticflickr.com/5/5449192_b958831537_s.jpg",
+  "height_sq": 75,
+  "width_sq": 75,
+  "url_t": "https://farm1.staticflickr.com/5/5449192_b958831537_t.jpg",
+  "height_t": "66",
+  "width_t": "100",
+  "url_s": "https://farm1.staticflickr.com/5/5449192_b958831537_m.jpg",
+  "height_s": "159",
+  "width_s": "240",
+  "url_q": "https://farm1.staticflickr.com/5/5449192_b958831537_q.jpg",
+  "height_q": "150",
+  "width_q": "150",
+  "url_m": "https://farm1.staticflickr.com/5/5449192_b958831537.jpg",
+  "height_m": "331",
+  "width_m": "500",
+  "url_z": "https://farm1.staticflickr.com/5/5449192_b958831537_z.jpg?zz=1",
+  "height_z": 424,
+  "width_z": "640",
+  "pathalias": "nickfraser",
+  "_fetchFlickr": {
+    "searchResult": {
+      "searchTerm": "berliner dom",
+      "numberOfPages": 5864,
+      "photosPerPage": 10
+    },
+    "page": 295
+  },
+  "manualAnnotation": {
+    "hasBoundingBox": true,
+    "bbox": {
+      "x": 0.102,
+      "y": 0,
+      "width": 0.68,
+      "height": 0.8848484848484849
+    }
+  }
+}
