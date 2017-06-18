@@ -24,7 +24,7 @@ class ImageApi
 		images = images.sort()
 
 		images = images.map (imageFile) ->
-			imageIdOnly = imageFile.substr(0, imageFile.length - 6)
+			imageIdOnly = imageFile.split('.')[0]
 
 			return {
 				id: imageIdOnly
