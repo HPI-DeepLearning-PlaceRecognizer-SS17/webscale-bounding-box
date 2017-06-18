@@ -1,12 +1,15 @@
 html
 	head
 		link(rel="stylesheet" href="style.css")
-	body(ng-app="webscaleBoundingBox")
+	body(ng-app="webscaleBoundingBox", ng-controller='mainController')
 		div#imageContainer
 			image#labeledImage(src='defaultImage.jpg')
 		canvas#drawCanvas
 		script(src="module.js")
 		div#menu(ng-controller='menuController')
 			h3 Labels
-			ul(ng-repeat='label in labels')
-				li {{label}}
+			div(ng-repeat='label in labels')
+				button.btn.btn-block(
+					ng-class='{"btn-primary": activeLabel == label, "btn-default": activeLabel != label}'
+					ng-click='setActiveLabel(label)'
+				) {{label}}

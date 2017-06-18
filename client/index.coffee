@@ -11,6 +11,7 @@ appState = {
   busy: true
   currentImage: null
   currentImageUrl: null
+  label: null
 }
 
 angular = require 'angular'
@@ -26,8 +27,8 @@ updateGui = ->
   imageReadyPromise = new Promise (resolve) ->
     labeledImage.onload = ->
       bbDrawer.clear()
-      if appState.currentImage.manualAnnotation?.bbox?
-        bbDrawer.show appState.currentImage.manualAnnotation.bbox
+      if appState.currentImage.boundingBox
+        bbDrawer.show appState.currentImage.boundingBox
       resolve()
       return
 
@@ -45,6 +46,7 @@ bbDrawer.setBbCallback (bbox) =>
 
   image = appState.currentImage
   image.boundingBox = bbox
+  image.annotationStatus = 'manuallyAnnotated'
 
   apiClient.setCurrentImage(image)
     .then -> apiClient.next()
@@ -52,9 +54,22 @@ bbDrawer.setBbCallback (bbox) =>
 
   return
 
-apiClient.load()
-  .then -> apiClient.getCurrentImage()
-  .then handleLoadedImage
+init = ->
+  apiClient.load()
+    .then -> apiClient.getCurrentImage()
+    .then handleLoadedImage
+  return
+
+init()
+
+# Binding between angular and legacy code
+app.controller 'mainController', ($scope) ->
+  $scope.$on 'activeLabelChange', (event, newActiveLabel) ->
+    console.log newActiveLabel
+    appState.label = newActiveLabel
+    apiClient.setLabel(newActiveLabel)
+    init()
+  return
 
 document.addEventListener 'keyup', (event) ->
   return if appState.busy

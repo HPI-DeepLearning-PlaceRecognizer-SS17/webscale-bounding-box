@@ -4,21 +4,21 @@ fs = require 'fs'
 
 class ImageApi
 
-	constructor: (@folder, @labelName, @app) ->
+	constructor: (@folder, @label, @app) ->
 		@folder = path.normalize @folder
-		@images = @_discoverImages @folder, @labelName
-		@indexJson = @_updateIndexFile(@folder, @labelName, @images)
+		@images = @_discoverImages @folder, @label
+		@indexJson = @_updateIndexFile(@folder, @label, @images)
 
-		@app.get "/images/#{@labelName}", @_getImages
-		@app.get "/images/#{@labelName}/:imageId/file", @_getImageFile
-		@app.get "/images/#{@labelName}/:imageId", @_getImage
-		@app.patch "/images/#{@labelName}/:imageId", @_patchImage
+		@app.get "/images/#{@label}/", @_getImages
+		@app.get "/images/#{@label}/:imageId/file", @_getImageFile
+		@app.get "/images/#{@label}/:imageId", @_getImage
+		@app.patch "/images/#{@label}/:imageId", @_patchImage
 		return
 
 	# Creates a list of all images that belong to the given label
-	# (folder structure needs to be /.../folder/labelName/imageId.jpg)
-	_discoverImages: (folder, labelName) =>
-		imageFolder = path.join folder, labelName
+	# (folder structure needs to be /.../folder/label/imageId.jpg)
+	_discoverImages: (folder, label) =>
+		imageFolder = path.join folder, label
 
 		images = glob.sync '*.jpg', {cwd: imageFolder}
 		images = images.sort()
@@ -34,7 +34,7 @@ class ImageApi
 
 		return images
 
-	# Given the discovered images, updates the folder/labelName.json index file with data from all individual files
+	# Given the discovered images, updates the folder/label.json index file with data from all individual files
 	_updateIndexFile: (folder, label, images) ->
 		# First, load all images
 		images = images.map (image) ->
