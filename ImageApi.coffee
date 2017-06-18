@@ -4,18 +4,23 @@ fs = require 'fs'
 
 class ImageApi
 
-	constructor: (@folder, @app) ->
+	constructor: (@folder, @labelName, @app) ->
 		@folder = path.normalize @folder
-		@images = @_discoverImages @folder
+		@images = @_discoverImages @folder, @labelName
+		@indexJson = @_updateIndexFile(@folder, @labelName, @images)
 
-		@app.get '/images/', @_getImages
-		@app.get '/images/:imageId/file', @_getImageFile
-		@app.get '/images/:imageId', @_getImage
-		@app.patch '/images/:imageId', @_patchImage
+		@app.get "/images/#{@labelName}", @_getImages
+		@app.get "/images/#{@labelName}/:imageId/file", @_getImageFile
+		@app.get "/images/#{@labelName}/:imageId", @_getImage
+		@app.patch "/images/#{@labelName}/:imageId", @_patchImage
 		return
 
-	_discoverImages: (folder) =>
-		images = glob.sync '*.jpg', {cwd: folder}
+	# Creates a list of all images that belong to the given label
+	# (folder structure needs to be /.../folder/labelName/imageId.jpg)
+	_discoverImages: (folder, labelName) =>
+		imageFolder = path.join folder, labelName
+
+		images = glob.sync '*.jpg', {cwd: imageFolder}
 		images = images.sort()
 
 		images = images.map (imageFile) ->
@@ -28,6 +33,31 @@ class ImageApi
 			}
 
 		return images
+
+	# Given the discovered images, updates the folder/labelName.json index file with data from all individual files
+	_updateIndexFile: (folder, label, images) ->
+		# First, load all images
+		images = images.map (image) ->
+			jsonContent = fs.readFileSync path.join(folder, label, image.jsonFile), {encoding: 'utf8'}
+			imageJson = JSON.parse jsonContent
+			return imageJson
+
+		# Then, load the index file if it exists
+		indexJson = {}
+		jsonPath = path.join folder, label + '.json'
+		if fs.existsSync jsonPath
+			indexJsonContent = fs.readFileSync jsonPath, {encoding: 'utf8'}
+			indexJson = JSON.parse indexJsonContent
+
+		# Merge data - prefer information from individual jsons over the merged file
+		# (but do not delete surplus data)
+		for image in images
+			indexJson[image.id] ?= {}
+			indexJson[image.id].annotationStatus = image.annotationStatus
+			indexJson[image.id].id = image.id
+
+		fs.writeFileSync jsonPath, JSON.stringify(indexJson, true, 2)
+		return indexJson
 
 	_getImageEntry: (id) =>
 		for image in @images
@@ -46,7 +76,7 @@ class ImageApi
 			response.status(404).end()
 			return
 
-		jsonPath = path.join @folder, imageEntry.jsonFile
+		jsonPath = path.join @folder, @label, imageEntry.jsonFile
 
 		fs.readFile jsonPath, 'utf8', (error, data) ->
 			unless error?
@@ -62,7 +92,7 @@ class ImageApi
 			response.status(404).end()
 			return
 
-		imagePath = path.resolve path.join @folder, imageEntry.pictureFile
+		imagePath = path.resolve path.join @folder, @label, imageEntry.pictureFile
 		response.sendFile imagePath
 		return
 
@@ -73,8 +103,10 @@ class ImageApi
 			response.status(404).end()
 			return
 
-		jsonPath = path.join @folder, imageEntry.jsonFile
-		jsonString = JSON.stringify request.body, true, 2
+		imageData = request.body
+
+		jsonPath = path.join @folder, @label, imageEntry.jsonFile
+		jsonString = JSON.stringify imageData, true, 2
 
 		fs.writeFile jsonPath, jsonString, 'utf8', (error) ->
 			if error?
@@ -83,6 +115,7 @@ class ImageApi
 				response.status(200).end()
 			return
 
+		@_updateIndexFile @folder, @label, [imageData]
 		return
 
 module.exports = ImageApi
