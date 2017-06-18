@@ -13,6 +13,7 @@
     "angular": "^1.6.4",
     "angular-resource": "^1.6.4",
     "body-parser": "^1.17.2",
+    "bootstrap-sass": "^3.3.7",
     "coffeeify": "^2.1.0",
     "express": "^4.15.3",
     "glob": "^7.1.2",
