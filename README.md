@@ -30,3 +30,7 @@ With a bit of training, you can reach a rate of 30 images per minute 🚀.
 Run `npm run startServer` to start the server. You can now go to `http://localhost:3000`.
 Three example images are already loaded (with annotated labels). Either replace the images in the folder
 or tell the server with `--imagePath <dir>` where to look.
+
+## Dockerfile
+
+You can build a docker image by running the script `buildDockerImage.sh`.
