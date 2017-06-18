@@ -2,8 +2,13 @@ angular = require 'angular'
 
 app = angular.module 'webscaleBoundingBox'
 
-menuController = ($scope) ->
+menuController = ($scope, Label) ->
   console.log 'MenuController'
+
+  Label.query (labels) ->
+    $scope.labels = labels
+    console.log labels
+
   return
 
-app.controller 'menuController', ['$scope', menuController]
+app.controller 'menuController', ['$scope', 'Label', menuController]

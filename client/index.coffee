@@ -14,8 +14,10 @@ appState = {
 }
 
 angular = require 'angular'
-app = angular.module 'webscaleBoundingBox', []
+require 'angular-resource'
+app = angular.module 'webscaleBoundingBox', ['ngResource']
 require './menuController.coffee'
+require './Label.coffee'
 
 bbDrawer = new BoundingBoxDrawer(drawCanvas, labeledImage, (bbox) -> console.log bbox)
 apiClient = new ImageApiClient()
