@@ -1,8 +1,9 @@
 html
 	head
 		link(rel="stylesheet" href="style.css")
-	body
+	body(ng-app="webscaleBoundingBox")
 		div#imageContainer
 			image#labeledImage(src='defaultImage.jpg')
 		canvas#drawCanvas
 		script(src="module.js")
+		div#menu(ng-controller='menuController')

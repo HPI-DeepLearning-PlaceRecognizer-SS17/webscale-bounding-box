@@ -13,6 +13,10 @@ appState = {
   currentImageUrl: null
 }
 
+angular = require 'angular'
+app = angular.module 'webscaleBoundingBox', []
+require './menuController.coffee'
+
 bbDrawer = new BoundingBoxDrawer(drawCanvas, labeledImage, (bbox) -> console.log bbox)
 apiClient = new ImageApiClient()
 
@@ -38,9 +42,7 @@ bbDrawer.setBbCallback (bbox) =>
   appState.busy = true
 
   image = appState.currentImage
-  image.manualAnnotation ?= {}
-  image.manualAnnotation.hasBoundingBox = true
-  image.manualAnnotation.bbox = bbox
+  image.boundingBox = bbox
 
   apiClient.setCurrentImage(image)
     .then -> apiClient.next()
@@ -72,9 +74,8 @@ document.addEventListener 'keyup', (event) ->
     when 'n'
       appState.busy = true
       image = appState.currentImage
-      image.manualAnnotation ?= {}
-      delete image.manualAnnotation.bbox
-      image.manualAnnotation.hasBoundingBox = false
+      image.annotationStatus = 'ignore'
+      delete image.boundingBox
 
       apiClient.setCurrentImage(image)
       .then -> apiClient.next()
