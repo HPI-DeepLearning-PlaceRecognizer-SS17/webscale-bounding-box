@@ -36,6 +36,7 @@ class ImageApiClient
           resolve {imageData: response.body, imageUrl}
 
   next: =>
+    console.log 'Choosing next image'
     nextImageIndex = @currentImageIndex + 1
 
     return @_checkImage nextImageIndex, 1
@@ -51,10 +52,10 @@ class ImageApiClient
       return Promise.resolve null
     return @_getImage(index)
       .then (image) =>
-        if @_filterImage(image)
+        if @_filterImage(image.imageData)
           return index
         else
-          return checkImage index + direction
+          return @_checkImage index + direction, direction
 
   _filterImage: (imageData) =>
     if not @filter?
