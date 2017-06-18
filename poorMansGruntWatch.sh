@@ -4,6 +4,6 @@
 
 while true
 do
-    grunt compile
+    grunt compileClient
     sleep 2
 done
