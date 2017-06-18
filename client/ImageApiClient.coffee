@@ -6,6 +6,10 @@ class ImageApiClient
     @images = []
     @currentImageIndex = 0
     @label = null
+    @filter = null
+
+  setFilter: (@filter) =>
+    return
 
   setLabel: (@label) =>
     @images = []
@@ -20,7 +24,10 @@ class ImageApiClient
           resolve()
 
   getCurrentImage: =>
-    id = @images[@currentImageIndex]
+    return @_getImage @currentImageIndex
+
+  _getImage: (index) =>
+    id = @images[index]
 
     return new Promise (resolve) =>
       unirest.get "http://localhost:3000/images/#{@label}/#{id}"
@@ -29,20 +36,60 @@ class ImageApiClient
           resolve {imageData: response.body, imageUrl}
 
   next: =>
-    @currentImageIndex++
+    nextImageIndex = @currentImageIndex + 1
 
-    if @currentImageIndex == @images.length
-      @currentImageIndex--
+    return @_checkImage nextImageIndex, 1
+    .then (nextGoodIndex) =>
+      if not nextGoodIndex?
+        return @getCurrentImage()
+      else
+        @currentImageIndex = nextGoodIndex
+        return @getCurrentImage()
 
-    return @getCurrentImage()
+  _checkImage: (index, direction) =>
+    if index is @images.length or index is -1
+      return Promise.resolve null
+    return @_getImage(index)
+      .then (image) =>
+        if @_filterImage(image)
+          return index
+        else
+          return checkImage index + direction
+
+  _filterImage: (imageData) =>
+    if not @filter?
+      return true
+
+    if @filter.ignoredImages and imageData.annotationStatus is 'ignore'
+      return false
+
+    if @filter.goodBoundingBoxes and imageData.annotationStatus is 'manuallyAnnotated'
+      return false
+
+    if @filter.goodBoundingBoxes and imageData.annotationStatus is 'autoAnnotated-Good'
+      return false
+
+    if @filter.okayishBoundingBoxes and imageData.annotationStatus is 'autoAnnotated-NeedsImprovement'
+      return false
+
+    if @filter.okayishBoundingBoxes and imageData.annotationStatus is 'autoAnnotated'
+      return false
+
+    if @filter.unprocessedImages and imageData.annotationStatus is 'none'
+      return false
+
+    return true
 
   previous: =>
-    @currentImageIndex--
+    previousImageIndex = @currentImageIndex - 1
 
-    if @currentImageIndex == -1
-      @currentImageIndex = 0
-
-    return @getCurrentImage()
+    return @_checkImage previousImageIndex, -1
+      .then (nextGoodIndex) =>
+        if not nextGoodIndex?
+          return @getCurrentImage()
+        else
+          @currentImageIndex = nextGoodIndex
+          return @getCurrentImage()
 
   setCurrentImage: (imageData) =>
     id = @images[@currentImageIndex]

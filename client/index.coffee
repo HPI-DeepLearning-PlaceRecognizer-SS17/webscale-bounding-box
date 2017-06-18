@@ -11,7 +11,6 @@ appState = {
   busy: true
   currentImage: null
   currentImageUrl: null
-  label: null
 }
 
 angular = require 'angular'
@@ -66,9 +65,14 @@ init()
 app.controller 'mainController', ($scope) ->
   $scope.$on 'activeLabelChange', (event, newActiveLabel) ->
     console.log newActiveLabel
-    appState.label = newActiveLabel
     apiClient.setLabel(newActiveLabel)
     init()
+    return
+
+  $scope.$on 'filterChange', (event, filter) ->
+    console.log filter
+    apiClient.setFilter filter
+    return
   return
 
 document.addEventListener 'keyup', (event) ->

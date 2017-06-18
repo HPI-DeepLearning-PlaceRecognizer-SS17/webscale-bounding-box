@@ -13,3 +13,18 @@ html
 					ng-class='{"btn-primary": activeLabel == label, "btn-default": activeLabel != label}'
 					ng-click='setActiveLabel(label)'
 				) {{label}}
+			h3 Filter
+			p Automatically skip images that already...
+			ul(style="list-style: none; padding-left: 10px")
+				li
+					input(type='checkbox' ng-model='filter.ignoredImages' ng-change='filterChange()')
+					| Are ignored (Keyboard: N)
+				li
+					input(type='checkbox' ng-model='filter.goodBoundingBoxes' ng-change='filterChange()')
+					| Have a good bounding box (approved automatic/manual)
+				li
+					input(type='checkbox' ng-model='filter.okayishBoundingBoxes' ng-change='filterChange()')
+					| Have an okayish bounding box (automatic annotation that needs improvement)
+				li
+					input(type='checkbox' ng-model='filter.unprocessedImages' ng-change='filterChange()')
+					| Haven't been processed yet
