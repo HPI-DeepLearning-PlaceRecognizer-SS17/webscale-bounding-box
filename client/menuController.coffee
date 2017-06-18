@@ -28,6 +28,10 @@ menuController = ($scope, Label) ->
     $scope.$emit 'filterChange', $scope.filter
     return
 
+  $scope.$on 'currentImageChange', (even, newImage) ->
+    $scope.currentImageString = JSON.stringify(newImage, true, 2)
+    return
+
   return
 
 app.controller 'menuController', ['$scope', 'Label', menuController]

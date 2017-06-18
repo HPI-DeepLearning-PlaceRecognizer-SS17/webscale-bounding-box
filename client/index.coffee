@@ -11,6 +11,7 @@ appState = {
   busy: true
   currentImage: null
   currentImageUrl: null
+  currentImageChangeCallback: null
 }
 
 angular = require 'angular'
@@ -37,6 +38,8 @@ updateGui = ->
 handleLoadedImage = ({imageData, imageUrl}) ->
   appState.currentImage = imageData
   appState.currentImageUrl = imageUrl
+  if appState.currentImageChangeCallback?
+    appState.currentImageChangeCallback imageData
   return updateGui().then -> appState.busy = false
 
 bbDrawer.setBbCallback (bbox) =>
@@ -73,6 +76,12 @@ app.controller 'mainController', ($scope) ->
     console.log filter
     apiClient.setFilter filter
     return
+
+  appState.currentImageChangeCallback = (newImage) ->
+    $scope.$broadcast 'currentImageChange', newImage
+    $scope.$apply()
+    return
+
   return
 
 document.addEventListener 'keyup', (event) ->
