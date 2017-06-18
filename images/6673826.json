@@ -59,10 +59,10 @@
   "manualAnnotation": {
     "hasBoundingBox": true,
     "bbox": {
-      "x": 0.006,
-      "y": 0.002288329519450801,
-      "width": 0.994,
-      "height": 0.9565217391304348
+      "x": 0,
+      "y": 0,
+      "width": 1,
+      "height": 1
     }
   }
 }
