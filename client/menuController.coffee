@@ -16,7 +16,6 @@ menuController = ($scope, Label) ->
 
   Label.query (labels) ->
     $scope.labels = labels
-    $scope.setActiveLabel labels[0]
     return
 
   $scope.setActiveLabel = (label) ->
@@ -32,6 +31,7 @@ menuController = ($scope, Label) ->
     $scope.currentImageString = JSON.stringify(newImage, true, 2)
     return
 
+  $scope.filterChange()
   return
 
 app.controller 'menuController', ['$scope', 'Label', menuController]
