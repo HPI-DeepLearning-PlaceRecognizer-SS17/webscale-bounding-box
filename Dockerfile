@@ -5,6 +5,6 @@ COPY ./* /app/
 WORKDIR /app
 
 RUN npm install
-RUN npm run buildClient
+RUN npm run compileClient
 
 ENTRYPOINT ["npm", "run", "startServer"]
