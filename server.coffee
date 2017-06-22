@@ -23,3 +23,8 @@ for label in labels
 
 console.log "Listening on port 3000"
 app.listen(3000)
+
+process.on 'SIGINT', ->
+  console.log "Shutting down"
+  process.exit()
+  return
