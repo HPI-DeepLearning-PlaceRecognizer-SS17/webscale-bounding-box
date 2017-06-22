@@ -23,6 +23,7 @@
     "grunt-contrib-watch": "^1.0.0",
     "grunt-sass": "^2.0.0",
     "minimist": "^1.2.0",
+    "morgan": "^1.8.2",
     "unirest": "^0.5.1"
   }
 }
