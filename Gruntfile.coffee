@@ -15,7 +15,7 @@ module.exports = (grunt) ->
       defaultTask: {
         expand: true
         cwd: 'public'
-        src: '**/*.pug'
+        src: '*.pug'
         dest: 'public'
         ext: '.html'
       }

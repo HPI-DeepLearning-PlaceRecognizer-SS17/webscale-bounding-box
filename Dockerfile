@@ -1,10 +1,11 @@
 FROM node:6
 MAINTAINER arthur@arthursilber.de
 
-COPY ./* /app/
+COPY . /app/
 WORKDIR /app
 
 RUN npm install
-RUN ./node_modules/.bin/grunt compileClient
+RUN npm install -g grunt-cli
+RUN grunt compileClient
 
 ENTRYPOINT ["npm", "run", "startServer"]
