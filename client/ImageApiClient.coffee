@@ -18,7 +18,7 @@ class ImageApiClient
 
   load: =>
     return new Promise (resolve) =>
-      unirest.get "http://localhost:3000/images/#{@label}/"
+      unirest.get "#{window.location.origin}/images/#{@label}/"
         .end (images) =>
           @images = images.body
           resolve()
@@ -30,9 +30,9 @@ class ImageApiClient
     id = @images[index]
 
     return new Promise (resolve) =>
-      unirest.get "http://localhost:3000/images/#{@label}/#{id}"
+      unirest.get "#{window.location.origin}/images/#{@label}/#{id}"
         .end (response) =>
-          imageUrl = "http://localhost:3000/images/#{@label}/#{id}/file"
+          imageUrl = "#{window.location.origin}/images/#{@label}/#{id}/file"
           resolve {imageData: response.body, imageUrl}
 
   next: =>
@@ -96,7 +96,7 @@ class ImageApiClient
     id = @images[@currentImageIndex]
 
     return new Promise (resolve) =>
-      unirest.patch "http://localhost:3000/images/#{@label}/#{id}"
+      unirest.patch "#{window.location.origin}/images/#{@label}/#{id}"
         .headers({'Accept': 'application/json', 'Content-Type': 'application/json'})
         .send imageData
         .end (response) ->
